@@ -5,6 +5,8 @@ const url = require('url')
 const stringDecorder = require('string_decoder').StringDecoder
 const fs = require('fs')
 
+const {  getHandler   } = require('./routes')
+
 
 const mainServer = (req,res)=>{
     const parsedUrl = url.parse(req.url,true)
@@ -66,20 +68,6 @@ httpsServer.listen(3001,()=>{
 
 
 
-const handlers = {}
-handlers.ping = (data, cb)=>{
-    cb(200)
-}
 
-handlers._404 = (data, cb)=>{
-    cb(404,{'msg':'Not found'})
-}
 
-const router = {}
-router.ping = handlers.ping
 
-router._404 = handlers._404
-
-function getHandler(pathname){
-    return pathname in router ? router[pathname] : router['_404']
-}
