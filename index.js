@@ -45,6 +45,8 @@ const mainServer = (req,res)=>{
 }
 
 
+
+
 const httpServer = http.createServer(mainServer)
 const httpsServerOptions  = {
     key: fs.readFileSync('./https/key.pem'),
@@ -65,8 +67,8 @@ httpsServer.listen(3001,()=>{
 
 
 const handlers = {}
-handlers.sample = (data, cb)=>{
-    cb(200,{'msg':'Sample'})
+handlers.ping = (data, cb)=>{
+    cb(200)
 }
 
 handlers._404 = (data, cb)=>{
@@ -74,7 +76,7 @@ handlers._404 = (data, cb)=>{
 }
 
 const router = {}
-router.sample = handlers.sample
+router.ping = handlers.ping
 
 router._404 = handlers._404
 
