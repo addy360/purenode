@@ -1,9 +1,12 @@
 #! /bin/env node
 const http = require('http')
+const https = require('https')
 const url = require('url')
 const stringDecorder = require('string_decoder').StringDecoder
+const fs = require('fs')
 
-const server = http.createServer((req,res)=>{
+
+const mainServer = (req,res)=>{
     const parsedUrl = url.parse(req.url,true)
     const path = parsedUrl.pathname
     const treamedPath = path.replace(/^\/+|\/$/g,'')
@@ -30,19 +33,35 @@ const server = http.createServer((req,res)=>{
             status = typeof(status) == 'number' ? status : 200
             payload = typeof(payload) == 'object'? payload : {}
          
-            res.statusCode = status
+            
+            res.setHeader('Content-Type','application/json')
+            res.writeHead(status)
             res.end(JSON.stringify(payload))
-            console.log({status, payload})
         })
-        console.log(`${method} : ${treamedPath} `)
+        console.log(`${method.toUpperCase()} : ${treamedPath} `)
     })
 
     
+}
+
+
+const httpServer = http.createServer(mainServer)
+const httpsServerOptions  = {
+    key: fs.readFileSync('./https/key.pem'),
+    cert: fs.readFileSync('./https/cert.pem')
+}
+const httpsServer = https.createServer(httpsServerOptions, mainServer)
+
+
+const PORT = process.env.PORT || 3000
+httpServer.listen(PORT,()=>{
+    console.log(`http Server listening on port ${PORT}`)
 })
 
-server.listen(3000,()=>{
-    console.log(`Server listening on port 3000`)
+httpsServer.listen(3001,()=>{
+    console.log(`https Server listening on port ${3001}`)
 })
+
 
 
 const handlers = {}
