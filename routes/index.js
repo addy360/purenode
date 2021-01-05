@@ -3,6 +3,8 @@ const handlers = require('../controllers')
 const router = {}
 router.ping = handlers.ping
 
+router.users  = handlers.users
+
 router._404 = handlers._404
 
 
